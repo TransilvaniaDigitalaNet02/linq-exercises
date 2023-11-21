@@ -4,10 +4,12 @@
     {
         static void Main(string[] args)
         {
-            IEnumerable<Person> persons1 = PersonsDatabase.AllPersons;
-            IEnumerable<Person> persons2 = PersonsDatabase.AllPersons;
-            IEnumerable<Person> persons3 = PersonsDatabase.AllPersons;
-            Console.WriteLine("Accessed list of persons");
+            //PersonsDatabase.SaveToXml("Persons.xml");
+            PersonsDatabase.ReadFromXml("Persons.xml");
+            foreach (Person p in PersonsDatabase.AllPersons)
+            {
+                p.Print();
+            }
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace LinqExercises
+﻿using System.Globalization;
+using System.Xml.Linq;
+
+namespace LinqExercises
 {
     public static class PersonsDatabase
     {
@@ -58,6 +61,77 @@
                 yield return new Person(firstNames, CommonLastNames[idxLastNames], birthDate, Gender.Female);
                 idxLastNames++;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        public static void SaveToXml(string fileName)
+        {
+            // <Persons>
+            //   <Person firstName="John" lastName="Doe" gender="Male" dateOfBirth="1970-11-21"></Person>
+            // </Persons>
+
+            XElement persons = new XElement("Persons");
+            foreach (var p in PersonsDatabase.AllPersons)
+            {
+                XElement person = new XElement("Person");
+                person.Add(new XAttribute("firstName", p.FirstName));
+                person.Add(new XAttribute("lastName", p.LastName));
+                person.Add(new XAttribute("gender", Enum.Format(typeof(Gender), p.Gender, "G")));
+                person.Add(new XAttribute("dateOfBirth", p.DateOfBirth.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+
+                persons.Add(person);
+            }
+
+            persons.Save(fileName);
+        }
+
+        public static void ReadFromXml(string filePath)
+        {
+            XElement persons = XElement.Load(filePath);
+
+            List<Person> xmlPersons = new List<Person>();
+            foreach (XElement personElement in persons.Descendants("Person"))
+            {
+                string firstName = personElement.Attribute("firstName")?.Value;
+                if (string.IsNullOrEmpty(firstName))
+                {
+                    continue;
+                }
+
+                string lastName = personElement.Attribute("lastName")?.Value;
+                if (string.IsNullOrEmpty(lastName))
+                {
+                    continue;
+                }
+
+                string genderString = personElement.Attribute("gender")?.Value;
+                if (string.IsNullOrEmpty(genderString) ||
+                    !Enum.TryParse(genderString, out Gender parsedGender))
+                {
+                    continue;
+                }
+
+                string dateOfBirthString = personElement.Attribute("dateOfBirth")?.Value;
+                if (string.IsNullOrEmpty(dateOfBirthString) ||
+                    !DateTime.TryParseExact(
+                        dateOfBirthString,
+                        "yyyy-MM-dd",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out DateTime parsedDateOfBirth))
+                {
+                    continue;
+                }
+
+                Person p = new Person(firstName, lastName, parsedDateOfBirth, parsedGender);
+                xmlPersons.Add(p);
+            }
+
+            PersonsDatabase.persons = new Lazy<List<Person>>(
+                () => xmlPersons);
         }
     }
 }
