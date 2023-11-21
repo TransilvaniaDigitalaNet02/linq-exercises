@@ -6,26 +6,14 @@
         private readonly static string[] CommonFemaleFirstNames = { "Mary", "Patricia", "Maria", "Nancy", "Donna", "Laura", "Linda", "Susan", "Karen", "Carol", "Sarah", "Barbara", "Margaret", "Betty", "Ruth", "Kimberly", "Elizabeth", "Dorothy", "Helen", "Sharon", "Deborah" };
         private readonly static string[] CommonLastNames = { "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott" };
 
-        private static List<Person> persons = new List<Person>();
-
-        private static object lockMe = new object();
+        private static Lazy<List<Person>> persons = new Lazy<List<Person>>(
+            () => GeneratePersons().ToList());
 
         public static IEnumerable<Person> AllPersons
         {
             get
             {
-                if (persons.Count == 0)
-                {
-                    lock (lockMe)
-                    {
-                        if (persons.Count == 0)
-                        {
-                            persons.AddRange(GeneratePersons());
-                        }
-                    }
-                }
-
-                return persons;
+                return persons.Value;
             }
         }
 
@@ -41,6 +29,8 @@
 
         private static IEnumerable<Person> GeneratePersons()
         {
+            Console.WriteLine("Start GeneratePersons");
+
             var random = new Random();
             var startDate = new DateTime(1950, 1, 1);
             var idxLastNames = 0;

@@ -4,7 +4,10 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            IEnumerable<Person> persons1 = PersonsDatabase.AllPersons;
+            IEnumerable<Person> persons2 = PersonsDatabase.AllPersons;
+            IEnumerable<Person> persons3 = PersonsDatabase.AllPersons;
+            Console.WriteLine("Accessed list of persons");
         }
     }
 }
