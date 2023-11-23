@@ -18,11 +18,25 @@
                         };
             */
 
-            var query = PersonsDatabase.AllPersons.OrderByDescending(person => person);
             
-            foreach (Person p in query)
+            IEnumerable<IGrouping<int, Person>> query = PersonsDatabase.AllPersons
+                .GroupBy(person => person.DateOfBirth.Year)
+                .OrderBy(group => group.Key);
+            
+            
+            /*
+            IEnumerable<IGrouping<int, Person>> query = from person in PersonsDatabase.AllPersons
+                                                        orderby person.DateOfBirth.Year
+                                                        group person by person.DateOfBirth.Year;
+            */
+
+            foreach (IGrouping<int, Person> group in query)
             {
-                p.Print();
+                Console.WriteLine($"People born in {group.Key}");
+                foreach (Person p in group)
+                {
+                    p.Print();
+                }
             }
 
             //foreach (Person p in query)
