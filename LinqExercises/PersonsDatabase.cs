@@ -61,6 +61,8 @@ namespace LinqExercises
                 yield return new Person(firstNames, CommonLastNames[idxLastNames], birthDate, Gender.Female);
                 idxLastNames++;
             }
+
+            yield return new Student("StudentFirstName", "StudentLastName", new DateTime(2001, 11, 23), Gender.Male, "University of Bucharest");
         }
 
         /// <summary>
