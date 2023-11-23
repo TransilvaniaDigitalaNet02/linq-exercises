@@ -6,29 +6,19 @@
         {
             //PersonsDatabase.SaveToXml("Persons.xml");
 
-            /*
             PersonsDatabase.ReadFromXml("Persons.xml");
 
-            
-            IEnumerable<Person> query = PersonsDatabase
-                .AllPersons
-                .Where((person, index) => person.Age >= 14 
-                                          && person.FullName.StartsWith("D", StringComparison.OrdinalIgnoreCase)
-                                          && index % 2 == 0);
-            */
-
-            /*
-            IEnumerable<Person> query = from person in PersonsDatabase.AllPersons
-                                        where person.Age >= 14 && person.FullName.StartsWith("D", StringComparison.OrdinalIgnoreCase)
-                                        select person;
-            */
-
-            IEnumerable<Person> query = PersonsDatabase.AllPersons.OfType<Student>();
-
-            foreach (Person p in query)
+            IEnumerable<string> query = PersonsDatabase.AllPersons.Select(person => person.FullName);
+            foreach (string fullName in query)
             {
-                p.Print();
+                Console.WriteLine(fullName);
             }
+
+
+            //foreach (Person p in query)
+            //{
+            //    p.Print();
+            //}
         }
     }
 
