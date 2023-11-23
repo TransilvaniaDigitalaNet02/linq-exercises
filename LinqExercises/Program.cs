@@ -8,7 +8,9 @@
 
             PersonsDatabase.ReadFromXml("Persons.xml");
 
-            IEnumerable<string> query = PersonsDatabase.AllPersons.Select(person => person.FullName);
+            IEnumerable<string> query = from person in PersonsDatabase.AllPersons
+                                        select person.FullName;
+
             foreach (string fullName in query)
             {
                 Console.WriteLine(fullName);
