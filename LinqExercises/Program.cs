@@ -8,12 +8,27 @@
 
             PersonsDatabase.ReadFromXml("Persons.xml");
 
-            IEnumerable<string> query = from person in PersonsDatabase.AllPersons
-                                        select person.FullName;
+            /*
+            var query = from person in PersonsDatabase.AllPersons
+                        where person.Age >= 50
+                        select new
+                        {
+                            FullName = person.FullName,
+                            DateOfBirth = person.DateOfBirth
+                        };
+            */
 
-            foreach (string fullName in query)
+            var query = PersonsDatabase.AllPersons
+                .Where(person => person.Age >= 50)
+                .Select(person => new
+                {
+                    FullName = person.FullName,
+                    DateOfBirth = person.DateOfBirth
+                });
+
+            foreach (var obj in query)
             {
-                Console.WriteLine(fullName);
+                Console.WriteLine($"{obj.FullName} - {obj.DateOfBirth:yyyy-MM-dd}");
             }
 
 
