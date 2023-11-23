@@ -4,51 +4,23 @@
     {
         static void Main(string[] args)
         {
-            Console.Write("How many even numbers to display?=");
-            int n = Convert.ToInt32(Console.ReadLine());
+            //PersonsDatabase.SaveToXml("Persons.xml");
+            PersonsDatabase.ReadFromXml("Persons.xml");
 
             /*
-            IEnumerable<int> query = from number in NumbersGenerator.AllNumbers()
-                                     where number % 2 == 0
-                                     select number;
+            IEnumerable<Person> query = PersonsDatabase
+                .AllPersons
+                .Where(person => person.Age >= 14 && person.FullName.StartsWith("D", StringComparison.OrdinalIgnoreCase));
             */
 
-            IEnumerable<int> query = NumbersGenerator
-                .AllNumbers()
-                .Where(number => number % 2 == 0);
+            IEnumerable<Person> query = from person in PersonsDatabase.AllPersons
+                                        where person.Age >= 14 && person.FullName.StartsWith("D", StringComparison.OrdinalIgnoreCase)
+                                        select person;
 
-            int i = 0;
-            foreach (int number in query)
-            {
-                Console.Write($"{number}, ");
-                i++;
-                if (i >= n)
-                {
-                    break;
-                }
-            }
-
-            Console.WriteLine();
-
-            i = 0;
-            foreach (int number in NumbersGenerator.AllNumbers().WhereIsEven())
-            {
-                Console.Write($"{number}, ");
-                i++;
-                if (i >= n)
-                {
-                    break;
-                }
-            }
-
-            //PersonsDatabase.SaveToXml("Persons.xml");
-            /*
-            PersonsDatabase.ReadFromXml("Persons.xml");
-            foreach (Person p in PersonsDatabase.AllPersons)
+            foreach (Person p in query)
             {
                 p.Print();
             }
-            */
         }
     }
 }
