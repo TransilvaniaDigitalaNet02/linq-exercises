@@ -1,6 +1,6 @@
 ﻿namespace LinqExercises
 {
-    public class Person
+    public class Person : IComparable<Person>
     {
         public Person(string firstName, string lastName, DateTime dateOfBirth, Gender gender)
         {
@@ -35,6 +35,16 @@
 
         public int Age
             => DateTime.Today.Year - DateOfBirth.Year;
+
+        public int CompareTo(Person? other)
+        {
+            if (other is null)
+            {
+                return 1;
+            }
+
+            return DateOfBirth.CompareTo(other.DateOfBirth);
+        }
 
         public void Print()
         {
