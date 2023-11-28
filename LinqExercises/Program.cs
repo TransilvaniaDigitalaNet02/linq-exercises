@@ -4,45 +4,41 @@
     {
         static void Main(string[] args)
         {
-            //PersonsDatabase.SaveToXml("Persons.xml");
-
             PersonsDatabase.ReadFromXml("Persons.xml");
 
             /*
-            var query = from person in PersonsDatabase.AllPersons
-                        where person.Age >= 50
+            var query = from category in ProductsDatabase.AllCategories()
+                        join product in ProductsDatabase.AllProducts() on category.Id equals product.CategoryId into categoryGroup
                         select new
                         {
-                            FullName = person.FullName,
-                            DateOfBirth = person.DateOfBirth
+                            CategoryId = category.Id,
+                            CategoryName = category.Name,
+                            Products = categoryGroup
                         };
+            
             */
 
-            
-            IEnumerable<IGrouping<int, Person>> query = PersonsDatabase.AllPersons
-                .GroupBy(person => person.DateOfBirth.Year)
-                .OrderBy(group => group.Key);
-            
-            
-            /*
-            IEnumerable<IGrouping<int, Person>> query = from person in PersonsDatabase.AllPersons
-                                                        orderby person.DateOfBirth.Year
-                                                        group person by person.DateOfBirth.Year;
-            */
+            var query = ProductsDatabase.AllCategories()
+                    .GroupJoin(
+                        ProductsDatabase.AllProducts(),
+                        category => category.Id,
+                        product => product.CategoryId,
+                        (category, categoryGroup) => new
+                        {
+                            CategoryId = category.Id,
+                            CategoryName = category.Name,
+                            Products = categoryGroup.DefaultIfEmpty(new Product(1, "N/A", category.Id))
+                        });
 
-            foreach (IGrouping<int, Person> group in query)
+            foreach (var fullCategoryDefinition in query)
             {
-                Console.WriteLine($"People born in {group.Key}");
-                foreach (Person p in group)
+                Console.WriteLine($"{fullCategoryDefinition.CategoryName}");
+                foreach (Product p in fullCategoryDefinition.Products)
                 {
-                    p.Print();
+                    Console.WriteLine($"{p.Id} - {p.Name}");
                 }
+                
             }
-
-            //foreach (Person p in query)
-            //{
-            //    p.Print();
-            //}
         }
     }
 
